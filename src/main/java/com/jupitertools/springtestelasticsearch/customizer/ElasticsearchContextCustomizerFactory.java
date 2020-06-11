@@ -34,7 +34,8 @@ public class ElasticsearchContextCustomizerFactory implements ContextCustomizerF
         Set<ContainerDescription> descriptions =
                 annotations.stream()
                            .map(annotation -> new ContainerDescription(annotation.clusterNodesPropertyHolder(),
-                                                                       annotation.clusterNamePropertyHolder()))
+                                                                       annotation.clusterNamePropertyHolder(),
+                                                                       annotation.value()))
                            .collect(Collectors.toSet());
 
         return new ElasticsearchContextCustomizer(descriptions);
