@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Created on 28/11/2019
  * <p>
- * TODO: replace on the JavaDoc
+ * Elastic search context customizer description
  *
  * @author Korovin Anatoliy
  */
@@ -13,10 +13,12 @@ public class ContainerDescription {
 
     private final String clusterNodes;
     private final String clusterName;
+    private final String elasticVersion;
 
-    public ContainerDescription(String clusterNodes, String clusterName) {
+    public ContainerDescription(String clusterNodes, String clusterName, String elasticVersion) {
         this.clusterNodes = clusterNodes;
         this.clusterName = clusterName;
+        this.elasticVersion = elasticVersion;
     }
 
     public String getClusterNodes() {
@@ -27,17 +29,22 @@ public class ContainerDescription {
         return clusterName;
     }
 
+    public String getElasticVersion() {
+        return elasticVersion;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
-        if (o == null || getClass() != o.getClass()) { return false; }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ContainerDescription that = (ContainerDescription) o;
         return Objects.equals(clusterNodes, that.clusterNodes) &&
-               Objects.equals(clusterName, that.clusterName);
+               Objects.equals(clusterName, that.clusterName) &&
+               Objects.equals(elasticVersion, that.elasticVersion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clusterNodes, clusterName);
+        return Objects.hash(clusterNodes, clusterName, elasticVersion);
     }
 }

@@ -18,7 +18,14 @@ import java.lang.annotation.Target;
 @Repeatable(ElasticsearchTestContainers.class)
 public @interface ElasticsearchTestContainer {
 
-    String clusterNodesPropertyHolder() default "spring.data.elasticsearch.cluster-nodes";
+	/**
+	 * Docker image value of ElasticSearch
+	 *
+	 * @return necessary value of the docker image
+	 */
+	String value() default "6.4.1";
 
-    String clusterNamePropertyHolder() default  "spring.data.elasticsearch.cluster-name";
+	String clusterNodesPropertyHolder() default "spring.data.elasticsearch.cluster-nodes";
+
+	String clusterNamePropertyHolder() default "spring.data.elasticsearch.cluster-name";
 }

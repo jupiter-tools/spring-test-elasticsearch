@@ -29,7 +29,6 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
  */
 public class ElasticsearchContextCustomizer implements ContextCustomizer {
 
-    private static final String DOCKER_IMAGE_NAME = "docker.elastic.co/elasticsearch/elasticsearch:6.4.1";
     private static final Logger log = LoggerFactory.getLogger(ElasticsearchContextCustomizer.class);
 
     private final Set<ContainerDescription> containerDescriptions;
@@ -51,10 +50,11 @@ public class ElasticsearchContextCustomizer implements ContextCustomizer {
 
         for (ContainerDescription description : containerDescriptions) {
 
-            String clusterName = "test_cluster_" + new Random().nextInt(1000000);
+            String clusterName = "test_cluster_${new Random().nextInt(1000000)}";
+            String dockerImageName = getDockerImageName(description);
 
             GenericContainer container =
-                    new FixedHostPortGenericContainer<>(DOCKER_IMAGE_NAME)
+                    new FixedHostPortGenericContainer<>(dockerImageName)
                             .withExposedPorts(9200, 9300)
                             .withEnv("cluster.name", clusterName)
                             .withEnv("discovery.type", "single-node")
@@ -62,9 +62,10 @@ public class ElasticsearchContextCustomizer implements ContextCustomizer {
 
             log.info("Starting Elasticsearch TestContainer");
             container.start();
-            log.info("Started Elasticsearch TestContainer at:[{}] and bind to [{}]",
+            log.info("Started Elasticsearch TestContainer at:[{}] and bind to [{}], with cluster name: [{}]",
                      getHostPort(container),
-                     description.getClusterNodes());
+                     description.getClusterNodes(),
+                     clusterName);
 
             TestPropertyValues testPropertyValues =
                     TestPropertyValues.of(
@@ -76,9 +77,14 @@ public class ElasticsearchContextCustomizer implements ContextCustomizer {
     }
 
     private String getHostPort(GenericContainer container) {
-        return String.format("%s:%s",
-                             container.getContainerIpAddress(),
-                             container.getMappedPort(9300));
+        String host = container.getContainerIpAddress();
+        Integer port = container.getMappedPort(9300);
+        return "${host}:${port}";
+    }
+
+    private String getDockerImageName(ContainerDescription description){
+        String dockerImage = "docker.elastic.co/elasticsearch/elasticsearch";
+        return "${dockerImage}:${description.getElasticVersion()}";
     }
 
     @Override
