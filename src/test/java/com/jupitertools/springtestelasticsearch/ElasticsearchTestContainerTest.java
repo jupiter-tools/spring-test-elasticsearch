@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Korovin Anatoliy
  */
 @SpringBootTest
-@ElasticsearchTestContainer
+@ElasticsearchTestContainer("6.8.6")
 class ElasticsearchTestContainerTest {
 
     @Autowired
